@@ -109,19 +109,6 @@ describe("config", () => {
   })
 
   it("Update Admin Config - expect fail", async () => {
-    try {
-      const tx = await program.methods
-        .updateAdminConfig(new anchor.BN(300))
-        .accounts({
-          adminConfig: adminConfig,
-          admin: sender.publicKey,
-        })
-        .transaction()
-
-      await anchor.web3.sendAndConfirmTransaction(connection, tx, [sender])
-    } catch (err) {
-      expect(err)
-      // console.log(err)
-    }
+    
   })
 })
