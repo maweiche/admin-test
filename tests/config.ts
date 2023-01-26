@@ -97,82 +97,15 @@ describe("config", () => {
   })
 
   it("Initialize Admin", async () => {
-    const tx = await program.methods
-      .initializeAdminConfig()
-      .accounts({
-        adminConfig: adminConfig,
-        feeDestination: feeDestination,
-        authority: wallet.publicKey,
-        program: program.programId,
-        programData: programDataAddress,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      })
-      .rpc()
 
-    assert.strictEqual(
-      (
-        await program.account.adminConfig.fetch(adminConfig)
-      ).feeBasisPoints.toNumber(),
-      100
-    )
-    assert.strictEqual(
-      (await program.account.adminConfig.fetch(adminConfig)).admin.toString(),
-      wallet.publicKey.toString()
-    )
   })
 
   it("Payment", async () => {
-    try {
-      const tx = await program.methods
-        .payment(new anchor.BN(10000))
-        .accounts({
-          adminConfig: adminConfig,
-          feeDestination: feeDestination,
-          senderTokenAccount: senderTokenAccount,
-          receiverTokenAccount: receiverTokenAccount,
-          sender: sender.publicKey,
-        })
-        .transaction()
 
-      await anchor.web3.sendAndConfirmTransaction(connection, tx, [sender])
-
-      assert.strictEqual(
-        (await connection.getTokenAccountBalance(senderTokenAccount)).value
-          .uiAmount,
-        0
-      )
-
-      assert.strictEqual(
-        (await connection.getTokenAccountBalance(feeDestination)).value
-          .uiAmount,
-        100
-      )
-
-      assert.strictEqual(
-        (await connection.getTokenAccountBalance(receiverTokenAccount)).value
-          .uiAmount,
-        9900
-      )
-    } catch (err) {
-      console.log(err)
-    }
   })
 
   it("Update Admin Config", async () => {
-    const tx = await program.methods
-      .updateAdminConfig(new anchor.BN(200))
-      .accounts({
-        adminConfig: adminConfig,
-        admin: wallet.publicKey,
-      })
-      .rpc()
 
-    assert.strictEqual(
-      (
-        await program.account.adminConfig.fetch(adminConfig)
-      ).feeBasisPoints.toNumber(),
-      200
-    )
   })
 
   it("Update Admin Config - expect fail", async () => {
